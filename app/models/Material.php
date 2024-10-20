@@ -111,12 +111,12 @@ class Material
 
   public function update(
     $id,
+    $file_url,
     $name,
     $description,
     $course_id,
     $module_id,
-    $material_type,
-    $file_url
+    $material_type
   ) {
     $date_now = $this->date_create;
 

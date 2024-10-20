@@ -1,7 +1,7 @@
 <?php
 
 define('URL_BASE', "http://localhost:8000");
-define('SITE', "Globl Affiliates");
+define('SITE', "Api - EduCenter");
 
 define('CONTROLLERS', 'app/controllers');
 

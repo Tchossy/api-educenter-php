@@ -241,10 +241,10 @@ class MaterialController
 
     $file_body = $data['file_url'] ?? '';
     $name = $data['name'] ?? '';
-    $description = $data['name'] ?? '';
-    $course_id = $data['description'] ?? '';
-    $module_id = $data['duration'] ?? '';
-    $material_type = $data['status'] ?? '';
+    $description = $data['description'] ?? '';
+    $course_id = $data['course_id'] ?? '';
+    $module_id = $data['module_id'] ?? '';
+    $material_type = $data['material_type'] ?? '';
 
     $result_data = $this->materialModel->getById($id_doc);
     $num_row_data = $result_data->rowCount();

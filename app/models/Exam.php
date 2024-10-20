@@ -107,7 +107,7 @@ class Exam
     $stmt->bindParam(':date_create', $date_now);
 
     if ($stmt->execute()) {
-      return true;
+      return $this->conn->lastInsertId();
     } else {
       return false;
     }

@@ -83,7 +83,7 @@ class CourseController
         'date_update' => $date_update,
       );
 
-      Response::send(200, $course_item);
+      Response::send(200, array('error' => false, 'msg' => 'Registo encontrado.', 'data' => $course_item));
     } else {
       Response::send(200, array('error' => true, 'msg' => 'Registo não encontrado.'));
     }

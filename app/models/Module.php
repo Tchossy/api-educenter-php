@@ -32,6 +32,15 @@ class Module
     return $stmt;
   }
 
+  public function getAllByCourse($id)
+  {
+    $query = 'SELECT * FROM ' . $this->table . ' WHERE course_id = :id ORDER BY id DESC';
+    $stmt = $this->conn->prepare($query);
+    $stmt->bindParam(':id', $id);
+    $stmt->execute();
+    return $stmt;
+  }
+
   public function getById($id)
   {
     $query = 'SELECT * FROM ' . $this->table . ' WHERE id = :id ORDER BY id DESC LIMIT 1';

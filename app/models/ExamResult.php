@@ -43,7 +43,16 @@ class ExamResult
     $stmt->execute();
     return $stmt;
   }
-  public function getByStudent($id)
+  public function getByExamAndStudent($exam_id, $student_id)
+  {
+    $query = 'SELECT * FROM ' . $this->table . ' WHERE exam_id = :exam_id AND student_id = :student_id ORDER BY id DESC';
+    $stmt = $this->conn->prepare($query);
+    $stmt->bindParam(':exam_id', $exam_id);
+    $stmt->bindParam(':student_id', $student_id);
+    $stmt->execute();
+    return $stmt;
+  }
+  public function getAllByStudent($id)
   {
     $query = 'SELECT * FROM ' . $this->table . ' WHERE student_id = :id ORDER BY id DESC';
     $stmt = $this->conn->prepare($query);
@@ -97,7 +106,7 @@ class ExamResult
     $stmt->bindParam(':date_create', $date_now);
 
     if ($stmt->execute()) {
-      return true;
+      return $this->conn->lastInsertId();
     } else {
       return false;
     }

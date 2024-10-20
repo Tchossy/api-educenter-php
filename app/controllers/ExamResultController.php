@@ -18,6 +18,7 @@ class ExamResultController
 
   public $completeDate;
   public $lastPart;
+  public $penultimatePart;
 
   public function __construct()
   {
@@ -27,6 +28,7 @@ class ExamResultController
 
     $database = new Database();
     $this->lastPart = end($parts);
+    $this->penultimatePart = prev($parts);
     $this->db = $database->getConnection();
     $this->examResultModel = new ExamResult($this->db);
   }
@@ -41,18 +43,18 @@ class ExamResultController
       $exam_results_arr['data'] = array();
 
       while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-        extract($row);
+        // extract($row);
         $exam_result_item = array(
-          'id' => $id,
-          'exam_id' => $exam_id,
-          'student_id' => $student_id,
-          'score' => $score,
-          'status' => $status,
-          'result' => $result,
-          'feedback' => $feedback,
-          'submission_date' => $submission_date,
-          'date_create' => $date_create,
-          'date_update' => $date_update,
+          'id' => $row['id'],
+          'exam_id' => $row['exam_id'],
+          'student_id' => $row['student_id'],
+          'score' => $row['score'],
+          'status' => $row['status'],
+          'result' => $row['result'],
+          'feedback' => $row['feedback'],
+          'submission_date' => $row['submission_date'],
+          'date_create' => $row['date_create'],
+          'date_update' => $row['date_update']
         );
 
         array_push($exam_results_arr['data'], $exam_result_item);
@@ -87,7 +89,70 @@ class ExamResultController
         'date_update' => $date_update,
       );
 
-      Response::send(200, $exam_result_item);
+      Response::send(200, array('error' => false, 'msg' => 'Registo encontrado.', 'data' => $exam_result_item));
+    } else {
+      Response::send(200, array('error' => true, 'msg' => 'Registo não encontrado.'));
+    }
+  }
+  public function getAllByStudent()
+  {
+    $id = $this->lastPart;
+
+    $result = $this->examResultModel->getAllByStudent($id);
+    $num = $result->rowCount();
+
+    if ($num > 0) {
+      $exam_results_arr = array();
+      $exam_results_arr['data'] = array();
+
+      while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+        // extract($row);
+        $exam_results_item = array(
+          'id' => $row['id'],
+          'exam_id' => $row['exam_id'],
+          'student_id' => $row['student_id'],
+          'score' => $row['score'],
+          'status' => $row['status'],
+          'result' => $row['result'],
+          'feedback' => $row['feedback'],
+          'submission_date' => $row['submission_date'],
+          'date_create' => $row['date_create'],
+          'date_update' => $row['date_update']
+        );
+
+        array_push($exam_results_arr['data'], $exam_results_item);
+      }
+
+      Response::send(200, $exam_results_arr);
+    } else {
+      Response::send(200, array('error' => true, 'msg' => 'Nenhum registo encontrado.'));
+    }
+  }
+  public function getByExamAndStudent()
+  {
+    $examId = $this->penultimatePart;
+    $studentId = $this->lastPart;
+
+    $result = $this->examResultModel->getByExamAndStudent($examId, $studentId);
+    $num = $result->rowCount();
+
+    if ($num > 0) {
+      $row = $result->fetch(PDO::FETCH_ASSOC);
+      extract($row);
+      $exam_result_item = array(
+        'id' => $id,
+        'exam_id' => $exam_id,
+        'student_id' => $student_id,
+        'score' => $score,
+        'status' => $status,
+        'result' => $result,
+        'feedback' => $feedback,
+        'submission_date' => $submission_date,
+        'date_create' => $date_create,
+        'date_update' => $date_update,
+      );
+
+      Response::send(200, array('error' => false, 'msg' => 'Registo encontrado.', 'data' => $exam_result_item));
     } else {
       Response::send(200, array('error' => true, 'msg' => 'Registo não encontrado.'));
     }
@@ -150,17 +215,50 @@ class ExamResultController
       Response::send(200, array('error' => true, 'msg' => 'Erro ao identificar o estudante'));
     } else {
 
-      if ($this->examResultModel->createNew(
+      $exam_result_id = $this->examResultModel->createNew(
         $exam_id,
         $student_id,
         $score,
         $status,
         $result,
         $feedback
-      )) {
-        Response::send(200, array('error' => false, 'msg' => 'A criação foi um com sucesso.'));
+      );
+
+      if ($exam_result_id) {
+        // Busca os dados completos do exame recém-criado
+        $result = $this->examResultModel->getById($exam_result_id);
+
+        // Verifica se o exame foi encontrado
+        $num = $result->rowCount();
+        if ($num > 0) {
+          $row = $result->fetch(PDO::FETCH_ASSOC);
+          extract($row);
+          $exam_result_item = array(
+            'id' => $id,
+            'exam_id' => $exam_id,
+            'student_id' => $student_id,
+            'score' => $score,
+            'status' => $status,
+            'result' => $result,
+            'feedback' => $feedback,
+            'submission_date' => $submission_date,
+            'date_create' => $date_create,
+            'date_update' => $date_update
+          );
+
+          // Retorna os dados do exame recém-criado
+          Response::send(200, array(
+            'error' => false,
+            'msg' => 'A criação foi um sucesso.',
+            'data' => $exam_result_item
+          ));
+        } else {
+          // Caso o exame não tenha sido encontrado
+          Response::send(200, array('error' => true, 'msg' => 'Erro ao buscar o exame criado.'));
+        }
       } else {
-        Response::send(200, array('error' => true, 'msg' => 'Ocorreu um erro ao criar, por favor tente novamnete.'));
+        // Caso ocorra um erro ao criar o exame
+        Response::send(200, array('error' => true, 'msg' => 'Ocorreu um erro ao criar, por favor tente novamente.'));
       }
     }
   }
@@ -189,6 +287,12 @@ class ExamResultController
     if ($num_row_data <= 0) {
       Response::send(200, array('error' => true, 'msg' => 'Registo não encontrado'));
     } else {
+      if (empty($exam_id)) {
+        $exam_id = $row['exam_id'];
+      }
+      if (empty($student_id)) {
+        $student_id = $row['student_id'];
+      }
       if (empty($score)) {
         $score = $row['score'];
       }
@@ -202,23 +306,23 @@ class ExamResultController
         $feedback = $row['feedback'];
       }
 
-      if (empty($exam_id)) {
-        Response::send(200, array('error' => true, 'msg' => 'Erro ao identificar o exame'));
-      } elseif (empty($student_id)) {
-        Response::send(200, array('error' => true, 'msg' => 'Erro ao identificar o estudante'));
+      // if (empty($exam_id)) {
+      //   Response::send(200, array('error' => true, 'msg' => 'Erro ao identificar o exame'));
+      // } elseif (empty($student_id)) {
+      //   Response::send(200, array('error' => true, 'msg' => 'Erro ao identificar o estudante'));
+      // } else {
+      if ($this->examResultModel->update(
+        $id_doc,
+        $score,
+        $status,
+        $result,
+        $feedback
+      )) {
+        Response::send(200, array('error' => false, 'msg' => 'Registo atualizado com sucesso.'));
       } else {
-        if ($this->examResultModel->update(
-          $id_doc,
-          $score,
-          $status,
-          $result,
-          $feedback
-        )) {
-          Response::send(200, array('error' => false, 'msg' => 'Registo atualizado com sucesso.'));
-        } else {
-          Response::send(500, array('error' => true, 'msg' => 'Ocorreu um erro ao atualizar o registo.'));
-        }
+        Response::send(500, array('error' => true, 'msg' => 'Ocorreu um erro ao atualizar o registo.'));
       }
+      // }
     }
   }
 

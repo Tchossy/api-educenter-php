@@ -172,17 +172,53 @@ class ExamAnswerController
     $num = $result->rowCount();
 
     if ($num > 0) {
-      $tasks_arr = array();
-      $tasks_arr['data'] = array();
+      $exam_answers_arr = array();
+      $exam_answers_arr['data'] = array();
 
       while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
         // extract($row);
-        $task_item = array($row);
+        $exam_answer_item = array($row);
 
-        array_push($tasks_arr['data'], $task_item);
+        array_push($exam_answers_arr['data'], $exam_answer_item);
       }
 
-      Response::send(200, $tasks_arr);
+      Response::send(200, array('error' => false, 'msg' => 'Registo encontrado.', 'data' => $exam_answers_arr));
+    } else {
+      Response::send(200, array('error' => true, 'msg' => 'Nenhum registo encontrado.'));
+    }
+  }
+
+  public function getAllByExamAndStudent()
+  {
+    $exam_id = $this->secondLastPart;
+    $student_id = $this->lastPart;
+
+    $result = $this->examAnswerModel->getAllByExamAndStudent($exam_id, $student_id);
+    $num = $result->rowCount();
+
+    if ($num > 0) {
+      $exam_answers_arr['data'] = array();
+
+      while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+        extract($row);
+        $exam_answer_item = array(
+          'id' => $id,
+          'exam_id' => $exam_id,
+          'student_id' => $student_id,
+          'question_id' => $question_id,
+          'question_title' => $question_title,
+          'answer' => $answer,
+          'mark' => $mark,
+          'is_correct' => $is_correct,
+          'submission_date' => $submission_date,
+          'date_create' => $date_create,
+          'date_update' => $date_update,
+        );
+
+        array_push($exam_answers_arr['data'], $exam_answer_item);
+      }
+
+      Response::send(200, $exam_answers_arr);
     } else {
       Response::send(200, array('error' => true, 'msg' => 'Nenhum registo encontrado.'));
     }

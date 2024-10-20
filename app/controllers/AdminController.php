@@ -64,11 +64,10 @@ class AdminController
           'email' => $email,
           'status' => $status,
           'gender' => $gender,
-          'password' => $password,
           'date_create' => $date_create,
           'date_update' => $date_update,
         );
-        $return = ['adminInfo' => $admin_item, 'msg' => 'Login efetuado com sucesso.'];
+        $return = ['data' => $admin_item, 'msg' => 'Login efetuado com sucesso.'];
       } else {
         $return = ['error' => true, 'msg' => 'Dados de aceeso incorretos, tente novamente.'];
       }
@@ -97,7 +96,6 @@ class AdminController
           'email' => $email,
           'status' => $status,
           'gender' => $gender,
-          'password' => $password,
           'date_create' => $date_create,
           'date_update' => $date_update,
         );
@@ -130,12 +128,11 @@ class AdminController
         'email' => $email,
         'status' => $status,
         'gender' => $gender,
-        'password' => $password,
         'date_create' => $date_create,
         'date_update' => $date_update,
       );
 
-      Response::send(200, $admin_item);
+      Response::send(200, array('error' => false, 'msg' => 'Administrador não encontrado.', $admin_item));
     } else {
       Response::send(200, array('error' => true, 'msg' => 'Administrador não encontrado.'));
     }
@@ -164,7 +161,6 @@ class AdminController
           'email' => $email,
           'status' => $status,
           'gender' => $gender,
-          'password' => $password,
           'date_create' => $date_create,
           'date_update' => $date_update,
         );

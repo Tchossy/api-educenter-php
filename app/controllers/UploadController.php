@@ -48,7 +48,7 @@ class UploadController
       if (move_uploaded_file($tmp, $newPath)) {
         $image_admin = 'http://localhost:8000/' . $newPath;
 
-        Response::send(200, ['error' => false, 'msg' => "Upload da imagem realizado com sucesso", 'imageUrl' => $image_admin]);
+        Response::send(200, ['error' => false, 'msg' => "Upload da imagem realizado com sucesso", 'url' => $image_admin]);
       } else {
         Response::send(200, ['error' => true, 'msg' => "Erro: falha ao realizar o upload do arquivo."]);
         return; // Retorna imediatamente se ocorrer um erro ao mover o arquivo
@@ -100,7 +100,7 @@ class UploadController
       if (move_uploaded_file($tmp, $newPath)) {
         $image_professor = 'http://localhost:8000/' . $newPath;
 
-        Response::send(200, ['error' => false, 'msg' => "Upload da imagem realizado com sucesso", 'imageUrl' => $image_professor]);
+        Response::send(200, ['error' => false, 'msg' => "Upload da imagem realizado com sucesso", 'url' => $image_professor]);
       } else {
         Response::send(200, ['error' => true, 'msg' => "Erro: falha ao realizar o upload do arquivo."]);
         return; // Retorna imediatamente se ocorrer um erro ao mover o arquivo
@@ -151,7 +151,7 @@ class UploadController
       if (move_uploaded_file($tmp, $newPath)) {
         $image_student = 'http://localhost:8000/' . $newPath;
 
-        Response::send(200, ['error' => false, 'msg' => "Upload da imagem realizado com sucesso", 'imageUrl' => $image_student]);
+        Response::send(200, ['error' => false, 'msg' => "Upload da imagem realizado com sucesso", 'url' => $image_student]);
       } else {
         Response::send(200, ['error' => true, 'msg' => "Erro: falha ao realizar o upload do arquivo."]);
         return; // Retorna imediatamente se ocorrer um erro ao mover o arquivo
@@ -202,7 +202,7 @@ class UploadController
       if (move_uploaded_file($tmp, $newPath)) {
         $image_course = 'http://localhost:8000/' . $newPath;
 
-        Response::send(200, ['error' => false, 'msg' => "Upload da imagem realizado com sucesso", 'imageUrl' => $image_course]);
+        Response::send(200, ['error' => false, 'msg' => "Upload da imagem realizado com sucesso", 'url' => $image_course]);
       } else {
         Response::send(200, ['error' => true, 'msg' => "Erro: falha ao realizar o upload do arquivo."]);
         return; // Retorna imediatamente se ocorrer um erro ao mover o arquivo
@@ -253,7 +253,7 @@ class UploadController
       if (move_uploaded_file($tmp, $newPath)) {
         $image_exam = 'http://localhost:8000/' . $newPath;
 
-        Response::send(200, ['error' => false, 'msg' => "Upload da imagem realizado com sucesso", 'imageUrl' => $image_exam]);
+        Response::send(200, ['error' => false, 'msg' => "Upload da imagem realizado com sucesso", 'url' => $image_exam]);
       } else {
         Response::send(200, ['error' => true, 'msg' => "Erro: falha ao realizar o upload do arquivo."]);
         return; // Retorna imediatamente se ocorrer um erro ao mover o arquivo
@@ -304,7 +304,7 @@ class UploadController
       if (move_uploaded_file($tmp, $newPath)) {
         $image_task = 'http://localhost:8000/' . $newPath;
 
-        Response::send(200, ['error' => false, 'msg' => "Upload da imagem realizado com sucesso", 'imageUrl' => $image_task]);
+        Response::send(200, ['error' => false, 'msg' => "Upload da imagem realizado com sucesso", 'url' => $image_task]);
       } else {
         Response::send(200, ['error' => true, 'msg' => "Erro: falha ao realizar o upload do arquivo."]);
         return; // Retorna imediatamente se ocorrer um erro ao mover o arquivo
@@ -356,7 +356,7 @@ class UploadController
       if (move_uploaded_file($tmp, $newPath)) {
         $pdf_task_instruction = 'http://localhost:8000/' . $newPath;
 
-        Response::send(200, ['error' => false, 'msg' => "Upload do pdf realizado com sucesso", 'pdfUrl' => $pdf_task_instruction]);
+        Response::send(200, ['error' => false, 'msg' => "Upload do pdf realizado com sucesso", 'url' => $pdf_task_instruction]);
       } else {
         Response::send(200, ['error' => true, 'msg' => "Erro: falha ao realizar o upload do arquivo."]);
         return; // Retorna imediatamente se ocorrer um erro ao mover o arquivo
@@ -409,7 +409,7 @@ class UploadController
       if (move_uploaded_file($tmp, $newPath)) {
         $pdf_task_submition = 'http://localhost:8000/' . $newPath;
 
-        Response::send(200, ['error' => false, 'msg' => "Upload do pdf realizado com sucesso", 'pdfUrl' => $pdf_task_submition]);
+        Response::send(200, ['error' => false, 'msg' => "Upload do pdf realizado com sucesso", 'url' => $pdf_task_submition]);
       } else {
         Response::send(200, ['error' => true, 'msg' => "Erro: falha ao realizar o upload do arquivo."]);
         return; // Retorna imediatamente se ocorrer um erro ao mover o arquivo
@@ -462,7 +462,7 @@ class UploadController
       if (move_uploaded_file($tmp, $newPath)) {
         $pdf_material = 'http://localhost:8000/' . $newPath;
 
-        Response::send(200, ['error' => false, 'msg' => "Upload do pdf realizado com sucesso", 'pdfUrl' => $pdf_material]);
+        Response::send(200, ['error' => false, 'msg' => "Upload do pdf realizado com sucesso", 'url' => $pdf_material]);
       } else {
         Response::send(200, ['error' => true, 'msg' => "Erro: falha ao realizar o upload do arquivo."]);
         return; // Retorna imediatamente se ocorrer um erro ao mover o arquivo
@@ -514,7 +514,7 @@ class UploadController
       if (move_uploaded_file($tmp, $newPath)) {
         $video_material = 'http://localhost:8000/' . $newPath;
 
-        Response::send(200, ['error' => false, 'msg' => "Upload do video realizado com sucesso", 'videoUrl' => $video_material]);
+        Response::send(200, ['error' => false, 'msg' => "Upload do video realizado com sucesso", 'url' => $video_material]);
       } else {
         Response::send(200, ['error' => true, 'msg' => "Erro: falha ao realizar o upload do arquivo de video."]);
         return; // Retorna imediatamente se ocorrer um erro ao mover o arquivo

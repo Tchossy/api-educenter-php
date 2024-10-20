@@ -30,6 +30,7 @@ class Routes
 
         // Module
         '/module/get/all' => 'ModuleController@getAll', // "✅"
+        '/module/get/all/by/course/[0-9]+' => 'ModuleController@getAllByCourse', // "✅"
         '/module/get/one/[0-9]+' => 'ModuleController@getById', // "✅"
         '/module/search/all/[A-Za-z0-9]+' => 'ModuleController@searchByTerm', // "✅"
 
@@ -72,13 +73,15 @@ class Routes
         '/exam/answer/get/one/[0-9]+' => 'ExamAnswerController@getById', // "✅"
 
         '/exam/answer/get/all/by/result/[0-9]+' => 'ExamAnswerController@getByExam', // "✅"
+        '/exam/answer/get/all/by/exam/student/[0-9]+/[0-9]+' => 'ExamAnswerController@getAllByExamAndStudent', // "✅"
 
         // Exam Result
         '/exam/result/get/all' => 'ExamResultController@getAll', // "✅"
         '/exam/result/get/one/[0-9]+' => 'ExamResultController@getById', // "✅"
         '/exam/result/search/all/[A-Za-z0-9]+' => 'ExamResultController@searchByTerm', // "✅"
 
-        '/exam/result/get/all/by/student/[0-9]+' => 'ExamResultController@getByStudent', // "✅"
+        '/exam/result/get/all/by/student/[0-9]+' => 'ExamResultController@getAllByStudent', // "✅"
+        '/exam/result/get/one/by/exam/student/[0-9]+/[0-9]+' => 'ExamResultController@getByExamAndStudent', // "✅"
       ],
       'post' => [
         // Admin
@@ -90,6 +93,7 @@ class Routes
 
         // Student
         '/student/create' => 'StudentController@create',
+        '/student/login' => 'StudentController@login',
 
         // Course
         '/course/create' => 'CourseController@create',

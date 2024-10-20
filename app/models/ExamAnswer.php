@@ -53,6 +53,15 @@ class ExamAnswer
     $stmt->execute();
     return $stmt;
   }
+  public function getAllByExamAndStudent($exam_id, $student_id)
+  {
+    $query = 'SELECT * FROM ' . $this->table . ' WHERE exam_id = :exam_id AND student_id = :student_id ORDER BY id DESC';
+    $stmt = $this->conn->prepare($query);
+    $stmt->bindParam(':exam_id', $exam_id);
+    $stmt->bindParam(':student_id', $student_id);
+    $stmt->execute();
+    return $stmt;
+  }
 
   public function getByExam($id)
   {

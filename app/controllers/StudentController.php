@@ -55,20 +55,23 @@ class StudentController
       if ($num > 0) {
         $row = $result->fetch(PDO::FETCH_ASSOC);
         extract($row);
-        $admin_item = array(
+        $student_item = array(
           'id' => $id,
           'photo' => $photo,
           'first_name' => $first_name,
           'last_name' => $last_name,
           'phone' => $phone,
           'email' => $email,
-          'status' => $status,
           'gender' => $gender,
+          'date_of_birth' => $date_of_birth,
+          'course_id' => $course_id,
+          'module_id' => $module_id,
+          'status' => $status,
           'password' => $password,
           'date_create' => $date_create,
           'date_update' => $date_update,
         );
-        $return = ['adminInfo' => $admin_item, 'msg' => 'Login efetuado com sucesso.'];
+        $return = ['data' => $student_item, 'msg' => 'Login efetuado com sucesso.'];
       } else {
         $return = ['error' => true, 'msg' => 'Dados de aceeso incorretos, tente novamente.'];
       }
@@ -141,7 +144,7 @@ class StudentController
         'date_update' => $date_update,
       );
 
-      Response::send(200, $student_item);
+      Response::send(200, array('error' => false, 'msg' => 'Registo encontrado.', 'data' => $student_item));
     } else {
       Response::send(200, array('error' => true, 'msg' => 'Registo não encontrado.'));
     }

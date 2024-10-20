@@ -93,7 +93,7 @@ class ExamController
         'date_update' => $date_update,
       );
 
-      Response::send(200, $exam_item);
+      Response::send(200, array('error' => false, 'msg' => 'Registo encontrado.', 'data' => $exam_item));
     } else {
       Response::send(200, array('error' => true, 'msg' => 'Registo não encontrado.'));
     }
@@ -187,14 +187,14 @@ class ExamController
 
     $image = $data['image'] ?? '';
     $name = $data['name'] ?? '';
-    $description = $data['name'] ?? '';
-    $course_id = $data['name'] ?? '';
-    $module_id = $data['name'] ?? '';
-    $start_time = $data['name'] ?? '';
-    $end_time = $data['name'] ?? '';
-    $date_exam = $data['name'] ?? '';
-    $mark = $data['name'] ?? '';
-    $status = $data['name'] ?? '';
+    $description = $data['description'] ?? '';
+    $course_id = $data['course_id'] ?? '';
+    $module_id = $data['module_id'] ?? '';
+    $start_time = $data['start_time'] ?? '';
+    $end_time = $data['end_time'] ?? '';
+    $date_exam = $data['date_exam'] ?? '';
+    $mark = $data['mark'] ?? '';
+    $status = $data['status'] ?? '';
 
 
     if (empty($name)) {
@@ -217,7 +217,7 @@ class ExamController
       Response::send(200, array('error' => true, 'msg' => 'O campo status está vazio'));
     } else {
 
-      if ($this->examModel->createNew(
+      $exam_id = $this->examModel->createNew(
         $image,
         $name,
         $description,
@@ -227,11 +227,47 @@ class ExamController
         $end_time,
         $date_exam,
         $mark,
-        $status,
-      )) {
-        Response::send(200, array('error' => false, 'msg' => 'A criação foi um com sucesso.'));
+        $status
+      );
+
+      if ($exam_id) {
+        // Busca os dados completos do exame recém-criado
+        $result = $this->examModel->getById($exam_id);
+
+        // Verifica se o exame foi encontrado
+        $num = $result->rowCount();
+        if ($num > 0) {
+          $row = $result->fetch(PDO::FETCH_ASSOC);
+          extract($row);
+          $exam_item = array(
+            'id' => $id,
+            'image' => $image,
+            'name' => $name,
+            'description' => $description,
+            'course_id' => $course_id,
+            'module_id' => $module_id,
+            'start_time' => $start_time,
+            'end_time' => $end_time,
+            'date_exam' => $date_exam,
+            'mark' => $mark,
+            'status' => $status,
+            'date_create' => $date_create,
+            'date_update' => $date_update,
+          );
+
+          // Retorna os dados do exame recém-criado
+          Response::send(200, array(
+            'error' => false,
+            'msg' => 'A criação foi um sucesso.',
+            'data' => $exam_item
+          ));
+        } else {
+          // Caso o exame não tenha sido encontrado
+          Response::send(200, array('error' => true, 'msg' => 'Erro ao buscar o exame criado.'));
+        }
       } else {
-        Response::send(200, array('error' => true, 'msg' => 'Ocorreu um erro ao criar, por favor tente novamnete.'));
+        // Caso ocorra um erro ao criar o exame
+        Response::send(200, array('error' => true, 'msg' => 'Ocorreu um erro ao criar, por favor tente novamente.'));
       }
     }
   }

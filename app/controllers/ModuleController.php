@@ -60,6 +60,37 @@ class ModuleController
       Response::send(200, array('error' => true, 'msg' => 'Nenhum registo encontrado.'));
     }
   }
+  public function getAllByCourse()
+  {
+    $id = $this->lastPart;
+
+    $result = $this->moduleModel->getAllByCourse($id);
+    $num = $result->rowCount();
+
+    if ($num > 0) {
+      $modules_arr = array();
+      $modules_arr['data'] = array();
+
+      while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+        extract($row);
+        $module_item = array(
+          'id' => $id,
+          'name' => $name,
+          'description' => $description,
+          'course_id' => $course_id,
+          'status' => $status,
+          'date_create' => $date_create,
+          'date_update' => $date_update,
+        );
+
+        array_push($modules_arr['data'], $module_item);
+      }
+
+      Response::send(200, $modules_arr);
+    } else {
+      Response::send(200, array('error' => true, 'msg' => 'Registo não encontrado.'));
+    }
+  }
 
   public function getById()
   {
@@ -81,7 +112,7 @@ class ModuleController
         'date_update' => $date_update,
       );
 
-      Response::send(200, $module_item);
+      Response::send(200, array('error' => false, 'msg' => 'Registo encontrado.', 'data' => $module_item));
     } else {
       Response::send(200, array('error' => true, 'msg' => 'Registo não encontrado.'));
     }
