@@ -54,6 +54,14 @@ class Exam
     $stmt->execute();
     return $stmt;
   }
+  public function getByStudent($id)
+  {
+    $query = 'SELECT * FROM ' . $this->table . ' WHERE student_id = :id ORDER BY id DESC';
+    $stmt = $this->conn->prepare($query);
+    $stmt->bindParam(':id', $id);
+    $stmt->execute();
+    return $stmt;
+  }
   public function getByTerm($term)
   {
     $query = 'SELECT * FROM ' . $this->table . ' WHERE name LIKE :searchTerm OR description LIKE :searchTerm ORDER BY id DESC';

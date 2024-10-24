@@ -61,6 +61,7 @@ class Routes
         '/exam/search/all/[A-Za-z0-9]+' => 'ExamController@searchByTerm', // "✅"
 
         '/exam/get/all/by/module/[0-9]+' => 'ExamController@getByModule', // "✅"
+        '/exam/get/all/by/student/[0-9]+' => 'ExamController@getByStudent', // "✅"
 
         // Exam Question
         '/exam/question/get/all' => 'ExamQuestionController@getAll', // "✅"
@@ -82,6 +83,12 @@ class Routes
 
         '/exam/result/get/all/by/student/[0-9]+' => 'ExamResultController@getAllByStudent', // "✅"
         '/exam/result/get/one/by/exam/student/[0-9]+/[0-9]+' => 'ExamResultController@getByExamAndStudent', // "✅"
+
+        // Weekly Average
+        '/weekly/average/get/all' => 'WeeklyAverageController@getAll', // "✅"
+        '/weekly/average/get/one/[0-9]+' => 'WeeklyAverageController@getById', // "✅"
+
+        '/weekly/average/get/all/by/student/[0-9]+' => 'WeeklyAverageController@getAllByStudent', // "✅"
       ],
       'post' => [
         // Admin
@@ -122,6 +129,9 @@ class Routes
         // Exam result
         '/exam/result/create' => 'ExamResultController@create',
 
+        // Weekly Average
+        '/weekly/average/create' => 'WeeklyAverageController@create',
+
 
         // Upload
         '/upload/image/admin' => 'UploadController@imageAdmin', //
@@ -136,7 +146,7 @@ class Routes
 
         '/upload/pdf/material' => 'UploadController@pdfMaterial', // 
         '/upload/pdf/task/instruction' => 'UploadController@pdfTaskInstruction', //
-        '/upload/pdf/task/submition' => 'UploadController@pdfTaskSubmition', //
+        '/upload/pdf/task/submission' => 'UploadController@pdfTaskSubmission', //
 
       ],
       'delete' => [
@@ -175,6 +185,9 @@ class Routes
 
         // Exam result
         '/exam/result/delete/[0-9]+' => 'ExamResultController@delete',
+
+        // Weekly Average
+        '/weekly/average/delete/[0-9]+' => 'WeeklyAverageController@delete',
       ],
       'put' => [
         // Admin
@@ -212,6 +225,9 @@ class Routes
 
         // Exam result
         '/exam/result/update/[0-9]+' => 'ExamResultController@update',
+
+        // Weekly Average
+        '/weekly/average/update/[0-9]+' => 'WeeklyAverageController@update',
       ],
     ];
   }

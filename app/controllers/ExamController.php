@@ -137,6 +137,44 @@ class ExamController
     }
   }
 
+  public function getByStudent()
+  {
+    $id = $this->lastPart;
+
+    $result = $this->examModel->getByStudent($id);
+    $num = $result->rowCount();
+
+    if ($num > 0) {
+      $exams_arr = array();
+      $exams_arr['data'] = array();
+
+      while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+        extract($row);
+        $exam_item = array(
+          'id' => $id,
+          'image' => $image,
+          'name' => $name,
+          'description' => $description,
+          'course_id' => $course_id,
+          'module_id' => $module_id,
+          'start_time' => $start_time,
+          'end_time' => $end_time,
+          'date_exam' => $date_exam,
+          'mark' => $mark,
+          'status' => $status,
+          'date_create' => $date_create,
+          'date_update' => $date_update,
+        );
+
+        array_push($exams_arr['data'], $exam_item);
+      }
+
+      Response::send(200, $exams_arr);
+    } else {
+      Response::send(200, array('error' => true, 'msg' => 'Nenhum registo encontrado.'));
+    }
+  }
+
   public function searchByTerm()
   {
     // Obtém o conteúdo do corpo da requisição

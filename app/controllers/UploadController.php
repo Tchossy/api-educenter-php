@@ -368,12 +368,12 @@ class UploadController
     }
   }
 
-  public function pdfTaskSubmition()
+  public function pdfTaskSubmission()
   {
     // Verifica se um arquivo foi enviado
-    if (!empty($_FILES['pdfTaskSubmition']['tmp_name'])) {
+    if (!empty($_FILES['pdfTaskSubmission']['tmp_name'])) {
       // Obtém as informações do arquivo
-      $file = $_FILES['pdfTaskSubmition'];
+      $file = $_FILES['pdfTaskSubmission'];
       $size_max = 10485760; //10MB
       $accept  = array("pdf");
       $extension  = pathinfo($file['name'], PATHINFO_EXTENSION);
@@ -392,7 +392,7 @@ class UploadController
       }
 
       // Diretório para armazenar os arquivos
-      $folder = '_pdfDb/task_submition/';
+      $folder = '_pdfDb/task_submission/';
 
       if (!is_dir($folder)) {
         mkdir($folder, 755, true);
@@ -401,15 +401,15 @@ class UploadController
       // Nome temporário do arquivo
       $tmp = $file['tmp_name'];
       // Novo nome do arquivo
-      $newName = "pdf_task_submition-" . date('d-m-Y') . '-' . date('H') . 'h-' . uniqid() . ".$extension";
+      $newName = "pdf_task_submission-" . date('d-m-Y') . '-' . date('H') . 'h-' . uniqid() . ".$extension";
       // Caminho completo para o novo arquivo
       $newPath = $folder . $newName;
 
       // Move o arquivo para o diretório de destino
       if (move_uploaded_file($tmp, $newPath)) {
-        $pdf_task_submition = 'http://localhost:8000/' . $newPath;
+        $pdf_task_submission = 'http://localhost:8000/' . $newPath;
 
-        Response::send(200, ['error' => false, 'msg' => "Upload do pdf realizado com sucesso", 'url' => $pdf_task_submition]);
+        Response::send(200, ['error' => false, 'msg' => "Upload do pdf realizado com sucesso", 'url' => $pdf_task_submission]);
       } else {
         Response::send(200, ['error' => true, 'msg' => "Erro: falha ao realizar o upload do arquivo."]);
         return; // Retorna imediatamente se ocorrer um erro ao mover o arquivo

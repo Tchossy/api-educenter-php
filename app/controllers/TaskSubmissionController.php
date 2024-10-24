@@ -42,7 +42,20 @@ class TaskSubmissionController
 
       while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
         // extract($row);
-        $task_item = array($row);
+        $task_item = array(
+          'id' => $row['id'],
+          'task_id' => $row['task_id'],
+          'student_id' => $row['student_id'],
+          'submission_text' => $row['submission_text'],
+          'submission_url' => $row['submission_url'],
+          'result' => $row['result'],
+          'feedback' => $row['feedback'],
+          'submission_date' => $row['submission_date'],
+          'grade' => $row['grade'],
+          'status' => $row['status'],
+          'date_create' => $row['date_create'],
+          'date_update' => $row['date_update']
+        );
 
         array_push($tasks_arr['data'], $task_item);
       }
@@ -66,7 +79,20 @@ class TaskSubmissionController
 
       while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
         // extract($row);
-        $task_item = array($row);
+        $task_item = array(
+          'id' => $row['id'],
+          'task_id' => $row['task_id'],
+          'student_id' => $row['student_id'],
+          'submission_text' => $row['submission_text'],
+          'submission_url' => $row['submission_url'],
+          'result' => $row['result'],
+          'feedback' => $row['feedback'],
+          'submission_date' => $row['submission_date'],
+          'grade' => $row['grade'],
+          'status' => $row['status'],
+          'date_create' => $row['date_create'],
+          'date_update' => $row['date_update']
+        );
 
         array_push($tasks_arr['data'], $task_item);
       }
@@ -102,7 +128,7 @@ class TaskSubmissionController
         'date_update' => $date_update
       );
 
-      Response::send(200, $task_item);
+      Response::send(200, array('error' => false, 'msg' => 'Registo encontrado.', 'data' => $task_item));
     } else {
       Response::send(200, array('error' => true, 'msg' => 'Registo não encontrado.'));
     }
@@ -198,6 +224,12 @@ class TaskSubmissionController
     if ($num_row_data <= 0) {
       Response::send(200, array('error' => true, 'msg' => 'Registo não encontrado'));
     } else {
+      if (empty($task_id)) {
+        $task_id = $row['task_id'];
+      }
+      if (empty($student_id)) {
+        $student_id = $row['student_id'];
+      }
       if (empty($submission_text)) {
         $submission_text = $row['submission_text'];
       }
@@ -217,26 +249,20 @@ class TaskSubmissionController
         $status = $row['status'];
       }
 
-      if (empty($task_id)) {
-        Response::send(200, array('error' => true, 'msg' => 'Errro ao identificar a tarefa'));
-      } elseif (empty($student_id)) {
-        Response::send(200, array('error' => true, 'msg' => 'Errro ao identificar o estudante'));
+      if ($this->taskSubmissionModel->update(
+        $id_doc,
+        $task_id,
+        $student_id,
+        $submission_text,
+        $submission_url_body,
+        $result,
+        $feedback,
+        $grade,
+        $status
+      )) {
+        Response::send(200, array('error' => false, 'msg' => 'Registo atualizado com sucesso.'));
       } else {
-        if ($this->taskSubmissionModel->update(
-          $id_doc,
-          $task_id,
-          $student_id,
-          $submission_text,
-          $submission_url_body,
-          $result,
-          $feedback,
-          $grade,
-          $status
-        )) {
-          Response::send(200, array('error' => false, 'msg' => 'Registo atualizado com sucesso.'));
-        } else {
-          Response::send(500, array('error' => true, 'msg' => 'Ocorreu um erro ao atualizar o registo.'));
-        }
+        Response::send(500, array('error' => true, 'msg' => 'Ocorreu um erro ao atualizar o registo.'));
       }
     }
   }
