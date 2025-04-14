@@ -315,6 +315,57 @@ class UploadController
     }
   }
 
+  public function imageQuestion()
+  {
+    // Verifica se um arquivo foi enviado
+    if (!empty($_FILES['imageQuestion']['tmp_name'])) {
+      // Obtém as informações do arquivo
+      $file = $_FILES['imageQuestion'];
+      $size_max = 4916838; //4MB
+      $accept  = array("jpg", "png", "jpeg");
+      $extension  = pathinfo($file['name'], PATHINFO_EXTENSION);
+
+      // Verifica o tamanho do arquivo
+      if ($file['size'] >= $size_max) {
+        Response::send(200, ['error' => true, 'msg' => "Erro: A imagem excedeu o tamanho máximo de 4MB!"]);
+        return; // Retorna imediatamente se o tamanho exceder o limite
+      }
+
+      // Verifica a extensão do arquivo
+      if (!in_array($extension, $accept)) {
+        Response::send(200, ['error' => true, 'msg' => "Erro: Extensão ($extension) não permitida!"]);
+        return; // Retorna imediatamente se a extensão não for permitida
+      }
+
+      // Diretório para armazenar os arquivos
+      $folder = '_imagesDb/question/';
+
+      if (!is_dir($folder)) {
+        mkdir($folder, 755, true);
+      }
+
+      // Nome temporário do arquivo
+      $tmp = $file['tmp_name'];
+      // Novo nome do arquivo
+      $newName = "img_question-" . date('d-m-Y') . '-' . date('H') . 'h-' . uniqid() . ".$extension";
+      // Caminho completo para o novo arquivo
+      $newPath = $folder . $newName;
+
+      // Move o arquivo para o diretório de destino
+      if (move_uploaded_file($tmp, $newPath)) {
+        $image_question = 'http://localhost:8000/' . $newPath;
+
+        Response::send(200, ['error' => false, 'msg' => "Upload da imagem realizado com sucesso", 'url' => $image_question]);
+      } else {
+        Response::send(200, ['error' => true, 'msg' => "Erro: falha ao realizar o upload do arquivo."]);
+        return; // Retorna imediatamente se ocorrer um erro ao mover o arquivo
+      }
+    } else {
+      // Caso nenhum arquivo tenha sido enviado, você pode tratar esse caso de acordo com a lógica do seu sistema.
+      Response::send(200, ['error' => true, 'msg' => "Erro: Não selecionou a imagem."]);
+    }
+  }
+
   public function pdfTaskInstruction()
   {
     // Verifica se um arquivo foi enviado

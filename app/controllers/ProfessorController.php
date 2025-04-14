@@ -55,7 +55,7 @@ class ProfessorController
       if ($num > 0) {
         $row = $result->fetch(PDO::FETCH_ASSOC);
         extract($row);
-        $professor_item = array(
+        $admin_item = array(
           'id' => $id,
           'photo' => $photo,
           'first_name' => $first_name,
@@ -64,11 +64,10 @@ class ProfessorController
           'email' => $email,
           'status' => $status,
           'gender' => $gender,
-          'password' => $password,
           'date_create' => $date_create,
           'date_update' => $date_update,
         );
-        $return = ['professorInfo' => $professor_item, 'msg' => 'Login efetuado com sucesso.'];
+        $return = ['error' => false, 'data' => $admin_item, 'msg' => 'Login efetuado com sucesso.'];
       } else {
         $return = ['error' => true, 'msg' => 'Dados de aceeso incorretos, tente novamente.'];
       }

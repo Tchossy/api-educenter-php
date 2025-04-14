@@ -280,12 +280,14 @@ class ExamResultController
     $result = $data['result'] ?? '';
     $feedback = $data['feedback'] ?? '';
 
+    // Response::send(200, array('error' => true, 'msg' => $id_doc));
+
     $result_data = $this->examResultModel->getById($id_doc);
     $num_row_data = $result_data->rowCount();
     $row = $result_data->fetch(PDO::FETCH_ASSOC);
 
     if ($num_row_data <= 0) {
-      Response::send(200, array('error' => true, 'msg' => 'Registo não encontrado'));
+      Response::send(200, array('error' => true, 'msg' => $result_data));
     } else {
       if (empty($exam_id)) {
         $exam_id = $row['exam_id'];

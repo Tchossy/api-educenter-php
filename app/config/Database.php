@@ -7,6 +7,11 @@ class Database
   private $username = 'root';
   private $password = '';
 
+  // private $host = 'localhost';
+  // private $dbname = 'drilling_dfcenter';
+  // private $username = 'drilling_dfcenter';
+  // private $password = '!DFCenter1';
+
   public function getConnection()
   {
     $conn = null;

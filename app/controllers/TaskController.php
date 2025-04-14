@@ -205,15 +205,15 @@ class TaskController
       Response::send(200, array('error' => true, 'msg' => 'O campo modulo está vazio'));
     } elseif (empty($mark)) {
       Response::send(200, array('error' => true, 'msg' => 'O campo nota está vazio'));
-    } elseif (empty($task_type)) {
-      Response::send(200, array('error' => true, 'msg' => 'O campo tipo de tarefa está vazio'));
+      // } elseif (empty($task_type)) {
+      //   Response::send(200, array('error' => true, 'msg' => 'O campo tipo de tarefa está vazio'));
     } elseif (empty($due_date)) {
       Response::send(200, array('error' => true, 'msg' => 'O campo data limite está vazio'));
     } elseif (empty($status)) {
       Response::send(200, array('error' => true, 'msg' => 'O campo status está vazio'));
     } else {
 
-      if ($this->taskModel->createNew(
+      $exam_id = $this->taskModel->createNew(
         $image,
         $name,
         $description,
@@ -224,10 +224,45 @@ class TaskController
         $due_date,
         $status,
         $file_url
-      )) {
-        Response::send(200, array('error' => false, 'msg' => 'A criação foi um com sucesso.'));
+      );
+
+      if ($exam_id) {
+        // Busca os dados completos do exame recém-criado
+        $result = $this->taskModel->getById($exam_id);
+        // Verifica se o exame foi encontrado
+        $num = $result->rowCount();
+        if ($num > 0) {
+          $row = $result->fetch(PDO::FETCH_ASSOC);
+          extract($row);
+          $exam_item = array(
+            'id' => $id,
+            'image' => $image,
+            'name' => $name,
+            'description' => $description,
+            'course_id' => $course_id,
+            'module_id' => $module_id,
+            'mark' => $mark,
+            'task_type' => $task_type,
+            'due_date' => $due_date,
+            'status' => $status,
+            'file_url' => $file_url,
+            'date_create' => $date_create,
+            'date_update' => $date_update
+          );
+
+          // Retorna os dados do exame recém-criado
+          Response::send(200, array(
+            'error' => false,
+            'msg' => 'A criação foi um sucesso.',
+            'data' => $exam_item
+          ));
+        } else {
+          // Caso o exame não tenha sido encontrado
+          Response::send(200, array('error' => true, 'msg' => 'Erro ao buscar o exame criado.'));
+        }
       } else {
-        Response::send(200, array('error' => true, 'msg' => 'Ocorreu um erro ao criar, por favor tente novamnete.'));
+        // Caso ocorra um erro ao criar o exame
+        Response::send(200, array('error' => true, 'msg' => 'Ocorreu um erro ao criar, por favor tente novamente.'));
       }
     }
   }
@@ -260,6 +295,9 @@ class TaskController
     if ($num_row_data <= 0) {
       Response::send(200, array('error' => true, 'msg' => 'Registo não encontrado'));
     } else {
+      if (empty($task_type)) {
+        $task_type = $row['task_type'];
+      }
       if (empty($image_body)) {
         $image_body = $row['image'];
       }
@@ -277,8 +315,8 @@ class TaskController
         Response::send(200, array('error' => true, 'msg' => 'O campo modulo está vazio'));
       } elseif (empty($mark)) {
         Response::send(200, array('error' => true, 'msg' => 'O campo nota está vazio'));
-      } elseif (empty($task_type)) {
-        Response::send(200, array('error' => true, 'msg' => 'O campo tipo de tarefa está vazio'));
+        // } elseif (empty($task_type)) {
+        //   Response::send(200, array('error' => true, 'msg' => 'O campo tipo de tarefa está vazio'));
       } elseif (empty($due_date)) {
         Response::send(200, array('error' => true, 'msg' => 'O campo data limite está vazio'));
       } elseif (empty($status)) {

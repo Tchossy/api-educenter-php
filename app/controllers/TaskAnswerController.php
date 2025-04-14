@@ -2,19 +2,19 @@
 
 namespace app\controllers;
 
-require_once(__DIR__ . '/../models/ExamAnswer.php');
+require_once(__DIR__ . '/../models/TaskAnswer.php');
 require_once(__DIR__ . '/../utils/Response.php');
 require_once(__DIR__ . '/../config/Database.php');
 
-use app\models\ExamAnswer;
+use app\models\TaskAnswer;
 use app\utils\Response;
 use Database;
 use PDO;
 
-class ExamAnswerController
+class TaskAnswerController
 {
   private $db;
-  private $examAnswerModel;
+  private $taskAnswerModel;
 
   public $completeDate;
   public $lastPart;
@@ -30,23 +30,23 @@ class ExamAnswerController
     $this->lastPart = end($parts);
     $this->secondLastPart = prev($parts); // Penúltima parte
     $this->db = $database->getConnection();
-    $this->examAnswerModel = new ExamAnswer($this->db);
+    $this->taskAnswerModel = new TaskAnswer($this->db);
   }
 
   public function getAll()
   {
-    $result = $this->examAnswerModel->getAll();
+    $result = $this->taskAnswerModel->getAll();
     $num = $result->rowCount();
 
     if ($num > 0) {
-      $exam_answers_arr = array();
-      $exam_answers_arr['data'] = array();
+      $task_answers_arr = array();
+      $task_answers_arr['data'] = array();
 
       while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
         extract($row);
-        $exam_answer_item = array(
+        $task_answer_item = array(
           'id' => $id,
-          'exam_id' => $exam_id,
+          'task_id' => $task_id,
           'student_id' => $student_id,
           'question_id' => $question_id,
           'question_title' => $question_title,
@@ -58,10 +58,10 @@ class ExamAnswerController
           'date_update' => $date_update,
         );
 
-        array_push($exam_answers_arr['data'], $exam_answer_item);
+        array_push($task_answers_arr['data'], $task_answer_item);
       }
 
-      Response::send(200, $exam_answers_arr);
+      Response::send(200, $task_answers_arr);
     } else {
       Response::send(200, array('error' => true, 'msg' => 'Nenhum registo encontrado.'));
     }
@@ -71,15 +71,15 @@ class ExamAnswerController
   {
     $id = $this->lastPart;
 
-    $result = $this->examAnswerModel->getById($id);
+    $result = $this->taskAnswerModel->getById($id);
     $num = $result->rowCount();
 
     if ($num > 0) {
       $row = $result->fetch(PDO::FETCH_ASSOC);
       extract($row);
-      $exam_answer_item = array(
+      $task_answer_item = array(
         'id' => $id,
-        'exam_id' => $exam_id,
+        'task_id' => $task_id,
         'student_id' => $student_id,
         'question_id' => $question_id,
         'question_title' => $question_title,
@@ -91,7 +91,7 @@ class ExamAnswerController
         'date_update' => $date_update,
       );
 
-      Response::send(200, $exam_answer_item);
+      Response::send(200, $task_answer_item);
     } else {
       Response::send(200, array('error' => true, 'msg' => 'Registo não encontrado.'));
     }
@@ -101,15 +101,15 @@ class ExamAnswerController
     $student_id = $this->secondLastPart;
     $question_id = $this->lastPart;
 
-    $result = $this->examAnswerModel->getByStudentQuestion($student_id, $question_id);
+    $result = $this->taskAnswerModel->getByStudentQuestion($student_id, $question_id);
     $num = $result->rowCount();
 
     if ($num > 0) {
       $row = $result->fetch(PDO::FETCH_ASSOC);
       extract($row);
-      $exam_answer_item = array(
+      $task_answer_item = array(
         'id' => $id,
-        'exam_id' => $exam_id,
+        'task_id' => $task_id,
         'student_id' => $student_id,
         'question_id' => $question_id,
         'question_title' => $question_title,
@@ -121,7 +121,7 @@ class ExamAnswerController
         'date_update' => $date_update,
       );
 
-      Response::send(200, $exam_answer_item);
+      Response::send(200, $task_answer_item);
     } else {
       Response::send(200, array('error' => true, 'msg' => 'Registo não encontrado.'));
     }
@@ -131,19 +131,19 @@ class ExamAnswerController
     // Obtém o conteúdo do corpo da requisição
     $term = $data['term'] ?? $this->lastPart;
 
-    $result = $this->examAnswerModel->getByTerm($term);
+    $result = $this->taskAnswerModel->getByTerm($term);
     $num = $result->rowCount();
 
-    $exam_answers_arr = array();
+    $task_answers_arr = array();
 
     if ($num > 0) {
-      $exam_answers_arr['data'] = array();
+      $task_answers_arr['data'] = array();
 
       while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
         extract($row);
-        $exam_answer_item = array(
+        $task_answer_item = array(
           'id' => $id,
-          'exam_id' => $exam_id,
+          'task_id' => $task_id,
           'student_id' => $student_id,
           'question_id' => $question_id,
           'question_title' => $question_title,
@@ -155,55 +155,55 @@ class ExamAnswerController
           'date_update' => $date_update,
         );
 
-        array_push($exam_answers_arr['data'], $exam_answer_item);
+        array_push($task_answers_arr['data'], $task_answer_item);
       }
 
-      Response::send(200, $exam_answers_arr);
+      Response::send(200, $task_answers_arr);
     } else {
-      Response::send(200, array('error' => true, 'msg' => 'Nenhum registo encontrado.', $exam_answers_arr));
+      Response::send(200, array('error' => true, 'msg' => 'Nenhum registo encontrado.', $task_answers_arr));
     }
   }
 
-  public function getByExam()
+  public function getByTask()
   {
     $id = $this->lastPart;
 
-    $result = $this->examAnswerModel->getByExam($id);
+    $result = $this->taskAnswerModel->getByTask($id);
     $num = $result->rowCount();
 
     if ($num > 0) {
-      $exam_answers_arr = array();
-      $exam_answers_arr['data'] = array();
+      $task_answers_arr = array();
+      $task_answers_arr['data'] = array();
 
       while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
         // extract($row);
-        $exam_answer_item = array($row);
+        $task_answer_item = array($row);
 
-        array_push($exam_answers_arr['data'], $exam_answer_item);
+        array_push($task_answers_arr['data'], $task_answer_item);
       }
 
-      Response::send(200, array('error' => false, 'msg' => 'Registo encontrado.', 'data' => $exam_answers_arr));
+      Response::send(200, array('error' => false, 'msg' => 'Registo encontrado.', 'data' => $task_answers_arr));
     } else {
       Response::send(200, array('error' => true, 'msg' => 'Nenhum registo encontrado.'));
     }
   }
 
-  public function getAllByExamAndStudent()
+  public function getAllByTaskAndStudent()
   {
-    $exam_id = $this->secondLastPart;
+    $task_id = $this->secondLastPart;
     $student_id = $this->lastPart;
 
-    $result = $this->examAnswerModel->getAllByExamAndStudent($exam_id, $student_id);
+    $result = $this->taskAnswerModel->getAllByTaskAndStudent($task_id, $student_id);
     $num = $result->rowCount();
 
     if ($num > 0) {
-      $exam_answers_arr['data'] = array();
+      $task_answers_arr['data'] = array();
 
       while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
         extract($row);
-        $exam_answer_item = array(
+        $task_answer_item = array(
           'id' => $id,
-          'exam_id' => $exam_id,
+          'task_id' => $task_id,
           'student_id' => $student_id,
           'question_id' => $question_id,
           'question_title' => $question_title,
@@ -215,10 +215,10 @@ class ExamAnswerController
           'date_update' => $date_update,
         );
 
-        array_push($exam_answers_arr['data'], $exam_answer_item);
+        array_push($task_answers_arr['data'], $task_answer_item);
       }
 
-      Response::send(200, $exam_answers_arr);
+      Response::send(200, $task_answers_arr);
     } else {
       Response::send(200, array('error' => true, 'msg' => 'Nenhum registo encontrado.'));
     }
@@ -233,7 +233,7 @@ class ExamAnswerController
     // Decodifica o JSON em um array associativo
     $data = json_decode($requestBody, true);
 
-    $exam_id = $data['exam_id'] ?? '';
+    $task_id = $data['task_id'] ?? '';
     $student_id = $data['student_id'] ?? '';
     $question_id = $data['question_id'] ?? '';
     $question_title = $data['question_title'] ?? '';
@@ -242,8 +242,8 @@ class ExamAnswerController
     $is_correct = $data['is_correct'] ?? '';
     $question_id_row = '';
 
-    if (empty($exam_id)) {
-      Response::send(200, array('error' => true, 'msg' => 'Erro ao identificar o exame'));
+    if (empty($task_id)) {
+      Response::send(200, array('error' => true, 'msg' => 'Erro ao identificar o taske'));
     } elseif (empty($student_id)) {
       Response::send(200, array('error' => true, 'msg' => 'Erro ao identificar o estudante'));
     } elseif (empty($question_id)) {
@@ -252,7 +252,7 @@ class ExamAnswerController
       Response::send(200, array('error' => true, 'msg' => 'Erro ao identificar o titulo da questão'));
     } else {
       // Verificar se a pergunta já foi respondida
-      $result_data = $this->examAnswerModel->getByStudentQuestion($student_id, $question_id);
+      $result_data = $this->taskAnswerModel->getByStudentQuestion($student_id, $question_id);
       $row = $result_data->fetch(PDO::FETCH_ASSOC);
 
       if ($row) {
@@ -264,8 +264,8 @@ class ExamAnswerController
         return;
       }
 
-      if ($this->examAnswerModel->createNew(
-        $exam_id,
+      if ($this->taskAnswerModel->createNew(
+        $task_id,
         $student_id,
         $question_id,
         $question_title,
@@ -290,7 +290,7 @@ class ExamAnswerController
     // Decodifica o JSON em um array associativo
     $data = json_decode($requestBody, true);
 
-    $exam_id = $data['exam_id'] ?? '';
+    $task_id = $data['task_id'] ?? '';
     $student_id = $data['student_id'] ?? '';
     $question_id = $data['question_id'] ?? '';
     $question_title = $data['question_title'] ?? '';
@@ -298,7 +298,7 @@ class ExamAnswerController
     $mark = $data['mark'] ?? '';
     $is_correct = $data['is_correct'] ?? '';
 
-    $result_data = $this->examAnswerModel->getById($id_doc);
+    $result_data = $this->taskAnswerModel->getById($id_doc);
     $num_row_data = $result_data->rowCount();
     $row = $result_data->fetch(PDO::FETCH_ASSOC);
 
@@ -318,16 +318,16 @@ class ExamAnswerController
         $is_correct = $row['is_correct'];
       }
 
-      if (empty($exam_id)) {
-        Response::send(200, array('error' => true, 'msg' => 'Erro ao identificar o exame'));
+      if (empty($task_id)) {
+        Response::send(200, array('error' => true, 'msg' => 'Erro ao identificar o taske'));
       } elseif (empty($student_id)) {
         Response::send(200, array('error' => true, 'msg' => 'Erro ao identificar o estudante'));
       } elseif (empty($question_id)) {
         Response::send(200, array('error' => true, 'msg' => 'Erro ao identificar a questão'));
       } else {
-        if ($this->examAnswerModel->update(
+        if ($this->taskAnswerModel->update(
           $id_doc,
-          $exam_id,
+          $task_id,
           $student_id,
           $question_id,
           $question_title,
@@ -347,14 +347,14 @@ class ExamAnswerController
   {
     $id = $this->lastPart;
 
-    $result = $this->examAnswerModel->getById($id);
+    $result = $this->taskAnswerModel->getById($id);
     $num_row = $result->rowCount();
 
     if ($num_row <= 0) {
       Response::send(200, array('error' => true, 'msg' => 'Registo não encontrado'));
     } else {
 
-      if ($this->examAnswerModel->deleteById($id)) {
+      if ($this->taskAnswerModel->deleteById($id)) {
         Response::send(200, array('msg' => 'Registo excluído com sucesso.'));
       } else {
         Response::send(500, array('msg' => 'Ocorreu um erro ao excluir o usúario.'));
@@ -365,6 +365,6 @@ class ExamAnswerController
   // 200
   public function notFound()
   {
-    Response::send(200, array('msg' => 'Erro: Ouve algum erro, tente novamente (rota: /exam_answer).'));
+    Response::send(200, array('msg' => 'Erro: Ouve algum erro, tente novamente (rota: /task_answer).'));
   }
 }

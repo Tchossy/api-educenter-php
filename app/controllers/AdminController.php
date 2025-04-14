@@ -67,7 +67,7 @@ class AdminController
           'date_create' => $date_create,
           'date_update' => $date_update,
         );
-        $return = ['data' => $admin_item, 'msg' => 'Login efetuado com sucesso.'];
+        $return = ['error' => false, 'data' => $admin_item, 'msg' => 'Login efetuado com sucesso.'];
       } else {
         $return = ['error' => true, 'msg' => 'Dados de aceeso incorretos, tente novamente.'];
       }

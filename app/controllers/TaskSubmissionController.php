@@ -18,6 +18,7 @@ class TaskSubmissionController
 
   public $completeDate;
   public $lastPart;
+  public $penultimatePart;
 
   public function __construct()
   {
@@ -27,6 +28,7 @@ class TaskSubmissionController
 
     $database = new Database();
     $this->lastPart = end($parts);
+    $this->penultimatePart = prev($parts);
     $this->db = $database->getConnection();
     $this->taskSubmissionModel = new TaskSubmission($this->db);
   }
@@ -102,7 +104,37 @@ class TaskSubmissionController
       Response::send(200, array('error' => true, 'msg' => 'Nenhum registo encontrado.'));
     }
   }
+  public function getBytaskAndStudent()
+  {
+    $examId = $this->penultimatePart;
+    $studentId = $this->lastPart;
 
+    $result = $this->taskSubmissionModel->getByTaskAndStudent($examId, $studentId);
+    $num = $result->rowCount();
+
+    if ($num > 0) {
+      $row = $result->fetch(PDO::FETCH_ASSOC);
+      extract($row);
+      $exam_result_item = array(
+        'id' => $id,
+        'task_id' => $task_id,
+        'student_id' => $student_id,
+        'submission_text' => $submission_text,
+        'submission_url' => $submission_url,
+        'result' => $result,
+        'feedback' => $feedback,
+        'submission_date' => $submission_date,
+        'grade' => $grade,
+        'status' => $status,
+        'date_create' => $date_create,
+        'date_update' => $date_update
+      );
+
+      Response::send(200, array('error' => false, 'msg' => 'Registo encontrado.', 'data' => $exam_result_item));
+    } else {
+      Response::send(200, array('error' => true, 'msg' => 'Registo não encontrado.'));
+    }
+  }
   public function getById()
   {
     $id = $this->lastPart;
@@ -181,7 +213,8 @@ class TaskSubmissionController
     } elseif (empty($student_id)) {
       Response::send(200, array('error' => true, 'msg' => 'Errro ao identificar o estudante'));
     } else {
-      if ($this->taskSubmissionModel->createNew(
+
+      $task_result_id = $this->taskSubmissionModel->createNew(
         $task_id,
         $student_id,
         $submission_text,
@@ -190,10 +223,43 @@ class TaskSubmissionController
         $feedback,
         $grade,
         $status
-      )) {
-        Response::send(200, array('error' => false, 'msg' => 'A criação foi um com sucesso.'));
+      );
+
+      if ($task_result_id) {
+        $result = $this->taskSubmissionModel->getById($task_result_id);
+
+        $num = $result->rowCount();
+        if ($num > 0) {
+          $row = $result->fetch(PDO::FETCH_ASSOC);
+          extract($row);
+          $task_result_item = array(
+            'id' => $id,
+            'task_id' => $task_id,
+            'student_id' => $student_id,
+            'submission_text' => $submission_text,
+            'submission_url' => $submission_url,
+            'result' => $result,
+            'feedback' => $feedback,
+            'submission_date' => $submission_date,
+            'grade' => $grade,
+            'status' => $status,
+            'date_create' => $date_create,
+            'date_update' => $date_update
+          );
+
+          // Retorna os dados do tarefa recém-criado
+          Response::send(200, array(
+            'error' => false,
+            'msg' => 'A criação foi um sucesso.',
+            'data' => $task_result_item
+          ));
+        } else {
+          // Caso o exame não tenha sido encontrado
+          Response::send(200, array('error' => true, 'msg' => 'Erro ao buscar o exame criado.'));
+        }
       } else {
-        Response::send(200, array('error' => true, 'msg' => 'Ocorreu um erro ao criar, por favor tente novamnete.'));
+        // Caso ocorra um erro ao criar o exame
+        Response::send(200, array('error' => true, 'msg' => 'Ocorreu um erro ao criar, por favor tente novamente.'));
       }
     }
   }

@@ -4,13 +4,13 @@ namespace app\models;
 
 use PDO;
 
-class ExamQuestion
+class TaskQuestion
 {
   private $conn;
-  private $table = 'exam_question';
+  private $table = 'task_question';
 
   public $id;
-  public $exam_id;
+  public $task_id;
   public $question_text;
   public $question_type;
   public $question_answer;
@@ -43,9 +43,9 @@ class ExamQuestion
     $stmt->execute();
     return $stmt;
   }
-  public function getByExam($id)
+  public function getByTask($id)
   {
-    $query = 'SELECT * FROM ' . $this->table . ' WHERE exam_id = :id ORDER BY id DESC';
+    $query = 'SELECT * FROM ' . $this->table . ' WHERE task_id = :id ORDER BY id DESC';
     $stmt = $this->conn->prepare($query);
     $stmt->bindParam(':id', $id);
     $stmt->execute();
@@ -76,7 +76,7 @@ class ExamQuestion
   }
 
   public function createNew(
-    $exam_id,
+    $task_id,
     $question_text,
     $question_type,
     $question_answer,
@@ -86,9 +86,9 @@ class ExamQuestion
   ) {
     $date_now = $this->date_create;
 
-    $query = 'INSERT INTO ' . $this->table . ' (exam_id, question_text, question_type, question_answer, question_image, options, value, date_create) VALUES (:exam_id, :question_text, :question_type, :question_answer, :question_image, :options, :value, :date_create) ';
+    $query = 'INSERT INTO ' . $this->table . ' (task_id, question_text, question_type, question_answer, question_image, options, value, date_create) VALUES (:task_id, :question_text, :question_type, :question_answer, :question_image, :options, :value, :date_create) ';
     $stmt = $this->conn->prepare($query);
-    $stmt->bindParam(':exam_id', $exam_id);
+    $stmt->bindParam(':task_id', $task_id);
     $stmt->bindParam(':question_text', $question_text);
     $stmt->bindParam(':question_type', $question_type);
     $stmt->bindParam(':question_answer', $question_answer);
@@ -106,7 +106,7 @@ class ExamQuestion
 
   public function update(
     $id,
-    $exam_id,
+    $task_id,
     $question_text,
     $question_type,
     $question_answer,
@@ -116,9 +116,9 @@ class ExamQuestion
   ) {
     $date_now = $this->date_create;
 
-    $query = 'UPDATE ' . $this->table . ' SET exam_id = :exam_id, question_text = :question_text, question_type = :question_type, question_answer = :question_answer, question_image = :question_image, options = :options, value = :value, date_update = :date_update WHERE id = :id';
+    $query = 'UPDATE ' . $this->table . ' SET task_id = :task_id, question_text = :question_text, question_type = :question_type, question_answer = :question_answer, question_image = :question_image, options = :options, value = :value, date_update = :date_update WHERE id = :id';
     $stmt = $this->conn->prepare($query);
-    $stmt->bindParam(':exam_id', $exam_id);
+    $stmt->bindParam(':task_id', $task_id);
     $stmt->bindParam(':question_text', $question_text);
     $stmt->bindParam(':question_type', $question_type);
     $stmt->bindParam(':question_answer', $question_answer);

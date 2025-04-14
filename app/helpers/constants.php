@@ -1,7 +1,8 @@
 <?php
 
+// define('URL_BASE', "https://api-dfcenter.drillingfluidcenter.com");
 define('URL_BASE', "http://localhost:8000");
-define('SITE', "Api - EduCenter");
+define('SITE', "Api - DFCenter");
 
 define('CONTROLLERS', 'app/controllers');
 

@@ -48,12 +48,26 @@ class Routes
 
         '/task/get/all/by/module/[0-9]+' => 'TaskController@getAllByModule', // "✅"
 
+        // Task Question
+        '/task/question/get/all' => 'TaskQuestionController@getAll', // "✅"
+        '/task/question/get/one/[0-9]+' => 'TaskQuestionController@getById', // "✅"
+
+        '/task/question/get/all/by/task/[0-9]+' => 'TaskQuestionController@getByTask', // "✅"
+
+        // Task Answer
+        '/task/answer/get/all' => 'TaskAnswerController@getAll', // "✅"
+        '/task/answer/get/one/[0-9]+' => 'TaskAnswerController@getById', // "✅"
+
+        '/task/answer/get/all/by/result/[0-9]+' => 'TaskAnswerController@getByTask', // "✅"
+        '/task/answer/get/all/by/task/student/[0-9]+/[0-9]+' => 'TaskAnswerController@getAllByTaskAndStudent', // "✅"
+
         // Task submission
         '/task/submission/get/all' => 'TaskSubmissionController@getAll', // "✅"
         '/task/submission/get/one/[0-9]+' => 'TaskSubmissionController@getById', // "✅"
         '/task/submission/search/all/[A-Za-z0-9]+' => 'TaskSubmissionController@searchByTerm', // "✅"
 
         '/task/submission/get/all/by/student/[0-9]+' => 'TaskSubmissionController@getAllByStudent', // "✅"
+        '/task/submission/get/one/by/task/student/[0-9]+/[0-9]+' => 'TaskSubmissionController@getBytaskAndStudent', // "✅"
 
         // Exam
         '/exam/get/all' => 'ExamController@getAll', // "✅"
@@ -97,6 +111,7 @@ class Routes
 
         // Professor
         '/professor/create' => 'ProfessorController@create',
+        '/professor/login' => 'ProfessorController@login',
 
         // Student
         '/student/create' => 'StudentController@create',
@@ -113,6 +128,12 @@ class Routes
 
         // Task
         '/task/create' => 'TaskController@create',
+
+        // Task question
+        '/task/question/create' => 'TaskQuestionController@create',
+
+        // Task answer
+        '/task/answer/create' => 'TaskAnswerController@create',
 
         // Task submission
         '/task/submission/create' => 'TaskSubmissionController@create',
@@ -141,6 +162,7 @@ class Routes
         '/upload/image/exam' => 'UploadController@imageExam', //
 
         '/upload/image/task' => 'UploadController@imageTask', //
+        '/upload/image/question' => 'UploadController@imageQuestion', //
 
         '/upload/video/material' => 'UploadController@videoMaterial', // 
 
@@ -170,6 +192,12 @@ class Routes
 
         // Task
         '/task/delete/[0-9]+' => 'TaskController@delete',
+
+        // Task question
+        '/task/question/delete/[0-9]+' => 'TaskQuestionController@delete',
+
+        // Task answer
+        '/task/answer/delete/[0-9]+' => 'TaskAnswerController@delete',
 
         // Task submission
         '/task/submission/delete/[0-9]+' => 'TaskSubmissionController@delete',
@@ -210,6 +238,12 @@ class Routes
 
         // Task
         '/task/update/[0-9]+' => 'TaskController@update',
+
+        // Task question
+        '/task/question/update/[0-9]+' => 'TaskQuestionController@update',
+
+        // Task answer
+        '/task/answer/update/[0-9]+' => 'TaskAnswerController@update',
 
         // Task submission
         '/task/submission/update/[0-9]+' => 'TaskSubmissionController@update',

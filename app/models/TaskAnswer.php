@@ -4,22 +4,20 @@ namespace app\models;
 
 use PDO;
 
-class TaskSubmission
+class TaskAnswer
 {
   private $conn;
-  private $table = 'task_submission';
+  private $table = 'task_answer';
 
   public $id;
   public $task_id;
   public $student_id;
-  public $submission_text;
-  public $submission_url;
-  public $result;
-  public $feedback;
+  public $question_id;
+  public $question_title;
+  public $answer;
+  public $mark;
+  public $is_correct;
   public $submission_date;
-  public $grade;
-  public $status;
-
   public $date_create;
   public $date_update;
 
@@ -46,15 +44,16 @@ class TaskSubmission
     $stmt->execute();
     return $stmt;
   }
-  public function getAllByStudent($id)
+  public function getByStudentQuestion($student_id, $question_id)
   {
-    $query = 'SELECT * FROM ' . $this->table . ' WHERE student_id = :id ORDER BY id DESC';
+    $query = 'SELECT * FROM ' . $this->table . ' WHERE student_id = :student_id AND question_id = :question_id ORDER BY id DESC LIMIT 1';
     $stmt = $this->conn->prepare($query);
-    $stmt->bindParam(':id', $id);
+    $stmt->bindParam(':student_id', $student_id);
+    $stmt->bindParam(':question_id', $question_id);
     $stmt->execute();
     return $stmt;
   }
-  public function getByTaskAndStudent($task_id, $student_id)
+  public function getAllByTaskAndStudent($task_id, $student_id)
   {
     $query = 'SELECT * FROM ' . $this->table . ' WHERE task_id = :task_id AND student_id = :student_id ORDER BY id DESC';
     $stmt = $this->conn->prepare($query);
@@ -63,9 +62,18 @@ class TaskSubmission
     $stmt->execute();
     return $stmt;
   }
+
+  public function getByTask($id)
+  {
+    $query = 'SELECT * FROM ' . $this->table . ' WHERE task_id = :id ORDER BY id DESC';
+    $stmt = $this->conn->prepare($query);
+    $stmt->bindParam(':id', $id);
+    $stmt->execute();
+    return $stmt;
+  }
   public function getByTerm($term)
   {
-    $query = 'SELECT * FROM ' . $this->table . ' WHERE submission_text LIKE :searchTerm OR grade LIKE :searchTerm ORDER BY id DESC';
+    $query = 'SELECT * FROM ' . $this->table . ' WHERE question_title LIKE :searchTerm OR answer LIKE :searchTerm ORDER BY id DESC';
     $stmt = $this->conn->prepare($query);
     $stmt->bindValue(':searchTerm', '%' . $term . '%', PDO::PARAM_STR);
 
@@ -90,31 +98,28 @@ class TaskSubmission
   public function createNew(
     $task_id,
     $student_id,
-    $submission_text,
-    $submission_url,
-    $result,
-    $feedback,
-    $grade,
-    $status
+    $question_id,
+    $question_title,
+    $answer,
+    $mark,
+    $is_correct
   ) {
     $date_now = $this->date_create;
 
-    $query = 'INSERT INTO ' . $this->table . ' (task_id, student_id, submission_text, submission_url, result, feedback, submission_date, grade, status, date_create) VALUES (:task_id, :student_id, :submission_text, :submission_url, :result, :feedback, :submission_date, :grade, :status, :date_create) ';
+    $query = 'INSERT INTO ' . $this->table . ' (task_id, student_id, question_id, question_title, answer, mark, is_correct, submission_date, date_create) VALUES (:task_id, :student_id, :question_id, :question_title, :answer, :mark, :is_correct, :submission_date, :date_create) ';
     $stmt = $this->conn->prepare($query);
     $stmt->bindParam(':task_id', $task_id);
     $stmt->bindParam(':student_id', $student_id);
-    $stmt->bindParam(':submission_text', $submission_text);
-    $stmt->bindParam(':submission_url', $submission_url);
-    $stmt->bindParam(':result', $result);
-    $stmt->bindParam(':feedback', $feedback);
+    $stmt->bindParam(':question_id', $question_id);
+    $stmt->bindParam(':question_title', $question_title);
+    $stmt->bindParam(':answer', $answer);
+    $stmt->bindParam(':mark', $mark);
+    $stmt->bindParam(':is_correct', $is_correct);
     $stmt->bindParam(':submission_date', $date_now);
-    $stmt->bindParam(':grade', $grade);
-    $stmt->bindParam(':status', $status);
-
     $stmt->bindParam(':date_create', $date_now);
 
     if ($stmt->execute()) {
-      return $this->conn->lastInsertId();
+      return true;
     } else {
       return false;
     }
@@ -124,26 +129,23 @@ class TaskSubmission
     $id,
     $task_id,
     $student_id,
-    $submission_text,
-    $submission_url,
-    $result,
-    $feedback,
-    $grade,
-    $status,
+    $question_id,
+    $question_title,
+    $answer,
+    $mark,
+    $is_correct
   ) {
     $date_now = $this->date_create;
 
-    $query = 'UPDATE ' . $this->table . ' SET task_id = :task_id, student_id = :student_id, submission_text = :submission_text, submission_url = :submission_url, result = :result, feedback = :feedback, grade = :grade, status = :status, date_update = :date_update WHERE id = :id';
+    $query = 'UPDATE ' . $this->table . ' SET task_id = :task_id, student_id = :student_id, question_id = :question_id, question_title = :question_title, answer = :answer, mark = :mark, is_correct = :is_correct, date_update = :date_update WHERE id = :id';
     $stmt = $this->conn->prepare($query);
     $stmt->bindParam(':task_id', $task_id);
     $stmt->bindParam(':student_id', $student_id);
-    $stmt->bindParam(':submission_text', $submission_text);
-    $stmt->bindParam(':submission_url', $submission_url);
-    $stmt->bindParam(':result', $result);
-    $stmt->bindParam(':feedback', $feedback);
-    $stmt->bindParam(':grade', $grade);
-    $stmt->bindParam(':status', $status);
-
+    $stmt->bindParam(':question_id', $question_id);
+    $stmt->bindParam(':question_title', $question_title);
+    $stmt->bindParam(':answer', $answer);
+    $stmt->bindParam(':mark', $mark);
+    $stmt->bindParam(':is_correct', $is_correct);
     $stmt->bindParam(':date_update', $date_now);
     $stmt->bindParam(':id', $id);
 
